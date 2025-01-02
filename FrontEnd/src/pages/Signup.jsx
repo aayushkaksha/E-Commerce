@@ -37,6 +37,10 @@ const Signup = () => {
     }));
   };
 
+  const toggleSignin = () => {
+    navigate("/login")
+  }
+
   const validateForm = () => {
     let formErrors = {};
 
@@ -86,7 +90,7 @@ const Signup = () => {
 
       // On success
       const data = await response.json();
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.token);    
       navigate("/login"); // Redirect to login page
     } catch (error) {
       console.error("Signup error:", error.message);
@@ -261,6 +265,15 @@ const Signup = () => {
 
             {apiError && <p className="text-red-500 text-xs mt-2">{apiError}</p>}
           </form>
+          <div className="text-sm mt-4">
+                Already have an account?{" "}
+                <button
+                  onClick={toggleSignin}
+                  className="text-blue-500 underline"
+                >
+                  Sign in
+                </button>
+              </div>
         </div>
       </div>
     </div>

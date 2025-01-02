@@ -9,27 +9,15 @@ import {
 } from '@mui/material';
 import { X as XIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 export default function Cart({ open, onClose }) {
   const [products, setProducts] = useState([]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(false); // Added loading state
-  const [error, setError] = useState(null); // Added error state
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    } else {
-      setIsAuthenticated(true); 
-    }
-  }, [navigate]);
+  
+  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState(null); 
   
   useEffect(() => {
-    if (open && isAuthenticated) {
+    if (open) {
       setLoading(true); // Start loading
       setError(null); // Reset any previous errors
 
@@ -42,7 +30,7 @@ export default function Cart({ open, onClose }) {
       })
         .then((response) => {
           if (!response.ok) {
-            throw new Error('Failed to fetch cart data');
+            throw new Error('Need to login');
           }
           return response.json();
         })
@@ -62,7 +50,7 @@ export default function Cart({ open, onClose }) {
           setLoading(false); // Stop loading
         });
     }
-  }, [open, isAuthenticated]);
+  }, [open]);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>

@@ -4,12 +4,14 @@ import cors from 'cors';
 import { connectDB } from './config/db.js';
 import authRoutes from './routes/auth.route.js';
 import productRoutes from './routes/product.route.js';
-import cartRoutes from './routes/cart.route.js';  // Assuming this is where cart routes are defined
+import cartRoutes from './routes/cart.route.js';
+import wishlistRoutes from './routes/wishlist.route.js';
+
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000; // Default port fallback
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json()); // Parses incoming JSON requests
@@ -19,6 +21,7 @@ app.use(cors()); // Enables CORS for cross-origin requests
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
+app.use('/api/wishlist', wishlistRoutes);
 
 
 // Database connection and server start

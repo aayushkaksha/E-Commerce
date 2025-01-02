@@ -22,5 +22,8 @@ const wishlistSchema = new mongoose.Schema(
   }
 );
 
+// Index to prevent duplicates in wishlist for the same user
+wishlistSchema.index({ userId: 1, 'items.productId': 1 }, { unique: true });
+
 const Wishlist = mongoose.model("Wishlist", wishlistSchema);
 export default Wishlist;

@@ -9,7 +9,3 @@ router.post("/", protect, addToWishlist);
 router.delete("/", protect, removeFromWishlist);
 
 export default router;
-
-
-
-

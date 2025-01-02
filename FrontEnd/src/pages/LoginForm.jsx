@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Signup from "../pages/Signup"
-
 
 const LoginForm = () => {
   const navigate = useNavigate(); // Initialize navigate function
@@ -11,10 +9,12 @@ const LoginForm = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState("");
-  const [showSignup, setShowSignup] = useState(false);
+
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
-  const toggleSignup = () => setShowSignup((prev) => !prev);
+  const toggleSignup = () => {
+    navigate("/signup")
+  }
 
   const validateForm = () => {
     let formErrors = {};
@@ -74,10 +74,6 @@ const LoginForm = () => {
   };
 
   return (
-    <>
-      {showSignup ? (
-        <Signup />
-      ) : (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
           <div className="flex flex-col lg:flex-row bg-white rounded-lg shadow-lg overflow-hidden xl:min-w-[400px] lg:w-[900px]">
             <div className="hidden lg:block lg:w-1/2">
@@ -160,8 +156,6 @@ const LoginForm = () => {
             </div>
           </div>
         </div>
-      )}
-    </>
   );
 };
 

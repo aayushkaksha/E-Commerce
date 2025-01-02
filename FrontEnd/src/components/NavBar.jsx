@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { User, ShoppingCart, Menu, MailIcon } from "lucide-react";
 import Cart from "./Cart";
-import { NavLink } from "react-router-dom";
+import { NavLink ,useNavigate} from "react-router-dom";
 import SearchBox from "./SearchBox";
 
 const NavBar = () => {
+
+  const navigate = useNavigate();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -17,7 +20,14 @@ const NavBar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
   const openCart = () => {
-    setIsCartOpen(true);
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      // Redirect to login if user is not authenticated
+      navigate("/login");
+    } else {
+      setIsCartOpen(true); // Open cart if authenticated
+    }
   };
   const closeCart = () => {
     setIsCartOpen(false);
