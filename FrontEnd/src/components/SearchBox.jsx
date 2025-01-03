@@ -95,7 +95,7 @@ const SearchBox = ({ toggleSearch }) => {
           <ul className='mt-2 space-y-1'>
             <li>
               <a href='#' className='text-blue-600 hover:underline'>
-                Gucci gift
+                Gift
               </a>
             </li>
             <li>

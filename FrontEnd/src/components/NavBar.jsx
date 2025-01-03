@@ -1,115 +1,124 @@
-import { useState } from "react";
-import { User, ShoppingCart, Menu, MailIcon } from "lucide-react";
-import Cart from "./Cart";
-import { NavLink } from "react-router-dom";
-import SearchBox from "./SearchBox";
+import { useState } from 'react'
+import { User, ShoppingCart, Menu, MailIcon } from 'lucide-react'
+import Cart from './Cart'
+import { NavLink, useNavigate } from 'react-router-dom'
+import SearchBox from './SearchBox'
 
 const NavBar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
+  const navigate = useNavigate()
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
 
   const toggleSearch = () => {
-    setSearchOpen(!searchOpen);
-  };
+    setSearchOpen(!searchOpen)
+  }
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+    setIsMenuOpen(!isMenuOpen)
+  }
   const openCart = () => {
-    setIsCartOpen(true);
-  };
+    const token = localStorage.getItem('token')
+
+    if (!token) {
+      // Redirect to login if user is not authenticated
+      navigate('/login')
+    } else {
+      setIsCartOpen(true) // Open cart if authenticated
+    }
+  }
   const closeCart = () => {
-    setIsCartOpen(false);
-  };
+    setIsCartOpen(false)
+  }
 
   const GotoTop = () => {
-    window.scrollTo(0, 0);
-  };
+    window.scrollTo(0, 0)
+  }
 
   return (
-    <div className="sticky top-0 z-50 w-full bg-white shadow-md">
-      <div className="container mx-auto relative">
-        <nav className="flex items-center justify-between py-4 pr-4 font-poppins">
-          <NavLink to="/" className="text-2xl font-bold pl-4 font-poppins">
-            Brand<span className="text-primary">.</span>
+    <div className='sticky top-0 z-50 w-full bg-white shadow-md'>
+      <div className='container mx-auto relative'>
+        <nav className='flex items-center justify-between py-4 pr-4 font-poppins'>
+          <NavLink to='/' className='text-2xl font-bold pl-4 font-poppins'>
+            Brand<span className='text-primary'>.</span>
           </NavLink>
 
-          <ul className="hidden lg:flex space-x-6">
+          <ul className='hidden lg:flex space-x-6'>
             <li>
               <NavLink
-                to="/Men"
-                className="flex items-center"
+                to='/Men'
+                className='flex items-center'
                 onClick={GotoTop}
               >
                 Men
               </NavLink>
             </li>
             <li>
-              <NavLink to="/Women" onClick={GotoTop}>
+              <NavLink to='/Women' onClick={GotoTop}>
                 Women
               </NavLink>
             </li>
             <li>
-              <NavLink to="/About" className="text-primary" onClick={GotoTop}>
+              <NavLink to='/About' className='text-primary' onClick={GotoTop}>
                 About
               </NavLink>
             </li>
             <li>
-              <NavLink to="/ContactPage" onClick={GotoTop}>
+              <NavLink to='/ContactPage' onClick={GotoTop}>
                 Contact
               </NavLink>
             </li>
           </ul>
 
-          <div className="flex items-center space-x-4">
+          <div className='flex items-center space-x-4'>
             <NavLink
-              to="/test"
-              className="p-2 hover:bg-gray-100 rounded-full"
-              aria-label="Go to test"
+              to='/test'
+              className='p-2 hover:bg-gray-100 rounded-full'
+              aria-label='Go to test'
             >
               <span>Test</span>
             </NavLink>
             <NavLink
-              to="/profile"
-              className="p-2 hover:bg-gray-100 rounded-full"
-              aria-label="Go to profile"
+              to='/profile'
+              className='p-2 hover:bg-gray-100 rounded-full'
+              aria-label='Go to profile'
             >
-              <User className="w-5 h-5" />
+              <User className='w-5 h-5' />
             </NavLink>
 
             <NavLink
-              to="/message"
-              className="relative p-2 hover:bg-gray-100 rounded-full"
-              aria-label="Go to messages"
+              to='/message'
+              className='relative p-2 hover:bg-gray-100 rounded-full'
+              aria-label='Go to messages'
             >
-              <MailIcon className="w-5 h-5" />
+              <MailIcon className='w-5 h-5' />
             </NavLink>
             <button
               onClick={openCart}
-              className="relative p-2 hover:bg-gray-100 rounded-full"
-              aria-label="Open cart"
+              className='relative p-2 hover:bg-gray-100 rounded-full'
+              aria-label='Open cart'
             >
-              <ShoppingCart className="w-5 h-5" />
+              <ShoppingCart className='w-5 h-5' />
             </button>
 
             <button
               onClick={toggleMenu}
-              className="lg:hidden p-2 hover:bg-gray-100 rounded-full"
-              aria-label="Toggle menu"
+              className='lg:hidden p-2 hover:bg-gray-100 rounded-full'
+              aria-label='Toggle menu'
             >
-              <Menu className="w-5 h-5" />
+              <Menu className='w-5 h-5' />
             </button>
           </div>
         </nav>
         {searchOpen && <SearchBox toggleSearch={toggleSearch} />}
         {isMenuOpen && (
-          <div className="lg:hidden mt-2 py-2 bg-white border-t font-poppins">
-            <ul className="space-y-2">
+          <div className='lg:hidden mt-2 py-2 bg-white border-t font-poppins'>
+            <ul className='space-y-2'>
               <li>
                 <NavLink
-                  to="/Men"
-                  className="block px-4 py-2 hover:bg-gray-100"
+                  to='/Men'
+                  className='block px-4 py-2 hover:bg-gray-100'
                   onClick={GotoTop}
                 >
                   Men
@@ -117,8 +126,8 @@ const NavBar = () => {
               </li>
               <li>
                 <NavLink
-                  to="/Women"
-                  className="block px-4 py-2 hover:bg-gray-100"
+                  to='/Women'
+                  className='block px-4 py-2 hover:bg-gray-100'
                   onClick={GotoTop}
                 >
                   Women
@@ -126,8 +135,8 @@ const NavBar = () => {
               </li>
               <li>
                 <NavLink
-                  to="/About"
-                  className="block px-4 py-2 hover:bg-gray-100 text-primary"
+                  to='/About'
+                  className='block px-4 py-2 hover:bg-gray-100 text-primary'
                   onClick={GotoTop}
                 >
                   About
@@ -135,8 +144,8 @@ const NavBar = () => {
               </li>
               <li>
                 <NavLink
-                  to="/ContactPage"
-                  className="block px-4 py-2 hover:bg-gray-100"
+                  to='/ContactPage'
+                  className='block px-4 py-2 hover:bg-gray-100'
                   onClick={GotoTop}
                 >
                   Contact
@@ -150,7 +159,7 @@ const NavBar = () => {
       {/* Render Cart */}
       <Cart open={isCartOpen} onClose={closeCart} />
     </div>
-  );
-};
+  )
+}
 
-export default NavBar;
+export default NavBar

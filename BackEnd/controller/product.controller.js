@@ -1,105 +1,105 @@
-import Product from "../models/product.model.js";
-import mongoose from "mongoose";
+import Product from '../models/product.model.js'
+import mongoose from 'mongoose'
 
 export const getProducts = async (req, res) => {
- 
   try {
-    const products = await Product.find({});
-    res.status(200).json({ success: true, data: products });
+    const products = await Product.find({})
+    res.status(200).json({ success: true, data: products })
   } catch (error) {
-    console.log("error in fetching products:", error.message);
-    res.status(500).json({ success: false, message: "Server Error" });
+    console.log('error in fetching products:', error.message)
+    res.status(500).json({ success: false, message: 'Server Error' })
   }
-};
+}
 
 export const createProduct = async (req, res) => {
-  const product = req.body; //the user will send this data
+  const product = req.body //the user will send this data
 
-  if (!product.name ||
+  if (
+    !product.name ||
     !product.price ||
     !product.image ||
     !product.colors ||
     !product.colors.every((color) => color.name) ||
     !product.sizes ||
-    !product.sizes.every((size) => size.name)) {
+    !product.sizes.every((size) => size.name)
+  ) {
     return res
       .status(400)
-      .json({ success: false, message: "Please provide all fields" });
+      .json({ success: false, message: 'Please provide all fields' })
   }
 
-  const newProduct = new Product(product);
+  const newProduct = new Product(product)
 
   try {
-    await newProduct.save();
-    res.status(201).json({ success: true, data: newProduct });
+    await newProduct.save()
+    res.status(201).json({ success: true, data: newProduct })
   } catch (error) {
-    console.error("Error in Creating the product:", error.message);
-    res.status(500).json({ success: false, message: "Server Error" });
+    console.error('Error in Creating the product:', error.message)
+    res.status(500).json({ success: false, message: 'Server Error' })
   }
-};
+}
 
 export const deleteProduct = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params
 
   try {
-    const deletedProduct = await Product.findByIdAndDelete(id);
+    const deletedProduct = await Product.findByIdAndDelete(id)
 
     if (!deletedProduct) {
       return res
         .status(404)
-        .json({ success: false, message: "Product not found" });
+        .json({ success: false, message: 'Product not found' })
     }
 
-    res.status(200).json({ success: true, message: "Product Deleted" });
+    res.status(200).json({ success: true, message: 'Product Deleted' })
   } catch (error) {
-    console.log("Error in deleting products", error.message);
+    console.log('Error in deleting products', error.message)
 
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).json({ success: false, message: 'Server Error' })
   }
-};
+}
 
 export const updatedProduct = async (req, res) => {
-    const { id } = req.params;
-  
-    // Validate the product ID
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+  const { id } = req.params
+
+  // Validate the product ID
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(400)
+      .json({ success: false, message: 'Invalid Product ID' })
+  }
+
+  // Extract fields from the request body
+  const { name, price, image, desc, colors, sizes, highlights } = req.body
+
+  // Prepare the fields to be updated
+  const productUpdate = {
+    ...(name && { name }),
+    ...(price && { price }),
+    ...(image && { image }),
+    ...(desc && { desc }),
+    ...(colors && { colors }),
+    ...(sizes && { sizes }),
+    ...(highlights && { highlights }),
+  }
+
+  try {
+    // Update the product and return the updated document
+    const updatedProduct = await Product.findByIdAndUpdate(id, productUpdate, {
+      new: true, // Return the updated document
+    })
+
+    // Check if the product exists
+    if (!updatedProduct) {
       return res
-        .status(400)
-        .json({ success: false, message: "Invalid Product ID" });
+        .status(404)
+        .json({ success: false, message: 'Product not found' })
     }
-  
-    // Extract fields from the request body
-    const { name, price, image, desc, colors, sizes, highlights } = req.body;
-  
-    // Prepare the fields to be updated
-    const productUpdate = {
-      ...(name && { name }),
-      ...(price && { price }),
-      ...(images && { image }),
-      ...(desc && { desc }),
-      ...(colors && { colors }),
-      ...(sizes && { sizes }),
-      ...(highlights && { highlights }),
-    };
-  
-    try {
-      // Update the product and return the updated document
-      const updatedProduct = await Product.findByIdAndUpdate(id, productUpdate, {
-        new: true, // Return the updated document
-      });
-  
-      // Check if the product exists
-      if (!updatedProduct) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Product not found" });
-      }
-  
-      // Respond with the updated product
-      res.status(200).json({ success: true, data: updatedProduct });
-    } catch (error) {
-      console.error("Error updating product:", error.message);
-      res.status(500).json({ success: false, message: "Server Error" });
-    }
-  };
-  
+
+    // Respond with the updated product
+    res.status(200).json({ success: true, data: updatedProduct })
+  } catch (error) {
+    console.error('Error updating product:', error.message)
+    res.status(500).json({ success: false, message: 'Server Error' })
+  }
+}

@@ -12,6 +12,7 @@ import Shop from './pages/Shop'
 import SellersPage from './pages/SellersPage'
 import UCard from './components/UCard'
 import LoginForm from './pages/LoginForm'
+import Signup from './pages/Signup'
 import ProductDesc from './components/ProductDesc'
 
 import Test from './pages/Test'
@@ -25,17 +26,18 @@ const App = () => {
           <main className='flex-grow'>
             <Routes>
               <Route path='/' element={<Home />} />
-              <Route path='/Men' element={<Men />} />
-              <Route path='/Women' element={<Women />} />
-              <Route path='/About' element={<About />} />
-              <Route path='/ContactPage' element={<ContactPage />} />
-              <Route path='/Profile' element={<Profile />} />
-              <Route path='/Message' element={<Message />} />
-              <Route path='/Shop' element={<Shop />} />
-              <Route path='/Seller' element={<SellersPage />} />
+              <Route path='/men' element={<Men />} />
+              <Route path='/women' element={<Women />} />
+              <Route path='/about' element={<About />} />
+              <Route path='/contactPage' element={<ContactPage />} />
+              <Route path='/profile' element={<Profile />} />
+              <Route path='/message' element={<Message />} />
+              <Route path='/shop' element={<Shop />} />
+              <Route path='/seller' element={<SellersPage />} />
               <Route path='/' element={<UCard />} />
               <Route path='/product/:id' element={<ProductDesc />} />
               <Route path='/login' element={<LoginForm />} />
+              <Route path='/signup' element={<Signup />} />
               <Route path='/Test' element={<Test />} />
             </Routes>
           </main>
