@@ -19,7 +19,7 @@ const UCard = () => {
   if (error) return <p>Error: {error}</p>
 
   return (
-    <div className='main-container flex justify-left items-center'>
+    <div className='main-container flex justify-left items-center font-poppins'>
       <div className='w-full grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 my-6 px-4'>
         {products.map((item) => (
           <div
@@ -44,9 +44,7 @@ const UCard = () => {
               <div>
                 <h3 className='text-sm text-gray-700'>{item.name}</h3>
               </div>
-              <p className='text-sm font-medium text-gray-900'>
-                Rs.{item.price}
-              </p>
+              <p className='text-sm font-bold'>Rs.{item.price}</p>
             </div>
           </div>
         ))}
