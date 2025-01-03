@@ -51,14 +51,10 @@ const NavBar = () => {
                 className='flex items-center'
                 onClick={GotoTop}
               >
-                Men
+                Shop
               </NavLink>
             </li>
-            <li>
-              <NavLink to='/Women' onClick={GotoTop}>
-                Women
-              </NavLink>
-            </li>
+
             <li>
               <NavLink to='/About' className='text-primary' onClick={GotoTop}>
                 About
