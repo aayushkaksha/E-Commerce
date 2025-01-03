@@ -36,7 +36,7 @@ export default function ProductDesc() {
       <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
         <div className='rounded-lg overflow-hidden'>
           <img
-            src={product.images}
+            src={product.image}
             alt={`Image of ${product.name}`}
             className='w-full h-full object-cover'
           />
@@ -48,7 +48,7 @@ export default function ProductDesc() {
             Price: {product.price}
           </p>
           <p className='text-sm text-gray-700'>
-            {product.description || 'No description available.'}
+            {product.desc || 'No description available.'}
           </p>
 
           <div>
