@@ -1,6 +1,10 @@
 
 const Test = () => {
-  return <div>test comp here </div>;
-};
+  return (
+    <div className="text-5xl">
+      test comp here
+    </div>
+  )
+}
 
-export default Test;
+export default Test

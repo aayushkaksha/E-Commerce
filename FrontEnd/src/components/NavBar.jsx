@@ -47,25 +47,20 @@ const NavBar = () => {
           <ul className='hidden lg:flex space-x-6'>
             <li>
               <NavLink
-                to='/Men'
+                to='/shop'
                 className='flex items-center'
                 onClick={GotoTop}
               >
-                Men
+                Shop
               </NavLink>
             </li>
             <li>
-              <NavLink to='/Women' onClick={GotoTop}>
-                Women
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to='/About' className='text-primary' onClick={GotoTop}>
+              <NavLink to='/about' className='text-primary' onClick={GotoTop}>
                 About
               </NavLink>
             </li>
             <li>
-              <NavLink to='/ContactPage' onClick={GotoTop}>
+              <NavLink to='/contactPage' onClick={GotoTop}>
                 Contact
               </NavLink>
             </li>
@@ -117,25 +112,16 @@ const NavBar = () => {
             <ul className='space-y-2'>
               <li>
                 <NavLink
-                  to='/Men'
+                  to='/shop'
                   className='block px-4 py-2 hover:bg-gray-100'
                   onClick={GotoTop}
                 >
-                  Men
+                  Shop
                 </NavLink>
               </li>
               <li>
                 <NavLink
-                  to='/Women'
-                  className='block px-4 py-2 hover:bg-gray-100'
-                  onClick={GotoTop}
-                >
-                  Women
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to='/About'
+                  to='/about'
                   className='block px-4 py-2 hover:bg-gray-100 text-primary'
                   onClick={GotoTop}
                 >
@@ -144,7 +130,7 @@ const NavBar = () => {
               </li>
               <li>
                 <NavLink
-                  to='/ContactPage'
+                  to='/contactPage'
                   className='block px-4 py-2 hover:bg-gray-100'
                   onClick={GotoTop}
                 >
