@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const productSchema = new mongoose.Schema(
   {
@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema(
     colors: [
       {
         name: { type: String, required: true }, // Color name
-        hex: { type: String, required: false, default: "#FFFFFF" }, // Hexadecimal color code
+        hex: { type: String, required: false, default: '#FFFFFF' }, // Hexadecimal color code
       },
     ],
     sizes: [
@@ -32,12 +32,17 @@ const productSchema = new mongoose.Schema(
     highlights: {
       type: [String], // Array of highlights
     },
+    sellerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields
   }
-);
+)
 
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.model('Product', productSchema)
 
-export default Product;
+export default Product

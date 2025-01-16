@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { User, ShoppingCart, Menu, MailIcon } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { User, ShoppingCart, Menu, MailIcon, Store } from 'lucide-react'
 import Cart from './Cart'
 import { NavLink, useNavigate } from 'react-router-dom'
 import SearchBox from './SearchBox'
@@ -10,6 +10,30 @@ const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem('token')
+      if (!token) return
+
+      try {
+        const response = await fetch('/api/auth/profile', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        if (response.ok) {
+          const data = await response.json()
+          setUser(data.user)
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error)
+      }
+    }
+
+    fetchUser()
+  }, [])
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen)
@@ -105,6 +129,16 @@ const NavBar = () => {
             >
               <Menu className='w-5 h-5' />
             </button>
+
+            {user?.role === 'seller' && (
+              <NavLink
+                to='/seller'
+                className='p-2 hover:bg-gray-100 rounded-full'
+                aria-label='Seller Dashboard'
+              >
+                <Store className='w-5 h-5' />
+              </NavLink>
+            )}
           </div>
         </nav>
         {searchOpen && <SearchBox toggleSearch={toggleSearch} />}
