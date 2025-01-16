@@ -14,8 +14,8 @@ import UCard from './components/UCard'
 import LoginForm from './pages/LoginForm'
 import Signup from './pages/Signup'
 import ProductDesc from './components/ProductDesc'
-
 import Test from './pages/Test'
+import ProtectedRoute from './store/ProtectedRoute'
 
 const App = () => {
   return (
@@ -30,11 +30,24 @@ const App = () => {
               <Route path='/women' element={<Women />} />
               <Route path='/about' element={<About />} />
               <Route path='/contactPage' element={<ContactPage />} />
-              <Route path='/profile' element={<Profile />} />
+              <Route
+                path='/profile'
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
               <Route path='/message' element={<Message />} />
               <Route path='/shop' element={<Shop />} />
-              <Route path='/seller' element={<SellersPage />} />
-              <Route path='/' element={<UCard />} />
+              <Route
+                path='/seller'
+                element={
+                  <ProtectedRoute allowedRoles={['seller']}>
+                    <SellersPage />
+                  </ProtectedRoute>
+                }
+              />
               <Route path='/product/:id' element={<ProductDesc />} />
               <Route path='/login' element={<LoginForm />} />
               <Route path='/signup' element={<Signup />} />

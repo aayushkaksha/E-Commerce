@@ -12,30 +12,31 @@ export const getProducts = async (req, res) => {
 }
 
 export const createProduct = async (req, res) => {
-  const product = req.body //the user will send this data
+  const product = req.body
 
-  if (
-    !product.name ||
-    !product.price ||
-    !product.image ||
-    !product.colors ||
-    !product.colors.every((color) => color.name) ||
-    !product.sizes ||
-    !product.sizes.every((size) => size.name)
-  ) {
-    return res
-      .status(400)
-      .json({ success: false, message: 'Please provide all fields' })
+  if (!product.name || !product.price || !product.image) {
+    return res.status(400).json({
+      success: false,
+      message: 'Please provide all required fields',
+    })
   }
 
-  const newProduct = new Product(product)
-
   try {
+    const newProduct = new Product({
+      ...product,
+      sellerId: req.user.id, // Add seller ID to product
+    })
+
     await newProduct.save()
-    res.status(201).json({ success: true, data: newProduct })
+    res.status(201).json({
+      success: true,
+      data: newProduct,
+    })
   } catch (error) {
-    console.error('Error in Creating the product:', error.message)
-    res.status(500).json({ success: false, message: 'Server Error' })
+    res.status(500).json({
+      success: false,
+      message: 'Server Error',
+    })
   }
 }
 
