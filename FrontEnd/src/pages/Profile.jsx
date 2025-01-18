@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { LogOut, Store } from "lucide-react"; // Importing the LogOut icon
-import Wishlist from "../components/Wishlist";
+// import Wishlist from "../components/Wishlist";
 import { NavLink, useNavigate } from "react-router-dom";
 
 const Profile = () => {
@@ -103,7 +103,7 @@ const Profile = () => {
       <div className="container mx-auto px-4 py-6">
         <div className="bg-white shadow p-6 rounded-lg">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">My Wishlist</h2>
-          <Wishlist />
+          {/* <Wishlist /> */}
         </div>
       </div>
     </div>

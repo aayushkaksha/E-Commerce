@@ -4,12 +4,12 @@ import User from "../models/user.model.js";
 
 dotenv.config();
 
-const generateToken = (userId) => {
+const generateToken = (userId, role) => {
   if (!process.env.JWT_SECRET) {
-    throw new Error('JWT_SECRET is not defined in environment variables');
+    throw new Error("JWT_SECRET is not defined in environment variables");
   }
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { 
-    expiresIn: process.env.JWT_EXPIRE || "1d"
+  return jwt.sign({ id: userId, role }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE || "1d",
   });
 };
 
@@ -18,10 +18,15 @@ export const registerUser = async (req, res) => {
     const { firstName, lastName, email, password, role } = req.body;
 
     // Basic validation
-    if (!firstName?.trim() || !lastName?.trim() || !email?.trim() || !password?.trim()) {
+    if (
+      !firstName?.trim() ||
+      !lastName?.trim() ||
+      !email?.trim() ||
+      !password?.trim()
+    ) {
       return res.status(400).json({
         success: false,
-        message: "All fields are required"
+        message: "All fields are required",
       });
     }
 
@@ -29,7 +34,7 @@ export const registerUser = async (req, res) => {
     if (password.length < 8) {
       return res.status(400).json({
         success: false,
-        message: "Password must be at least 8 characters"
+        message: "Password must be at least 8 characters",
       });
     }
 
@@ -38,7 +43,7 @@ export const registerUser = async (req, res) => {
     if (!emailRegex.test(email)) {
       return res.status(400).json({
         success: false,
-        message: "Please provide a valid email"
+        message: "Please provide a valid email",
       });
     }
 
@@ -46,7 +51,15 @@ export const registerUser = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: "Email already registered"
+        message: "Email already registered",
+      });
+    }
+
+    // Restrict `admin` role assignment unless explicitly allowed
+    if (role === "admin" && process.env.ALLOW_ADMIN_REGISTRATION !== "true") {
+      return res.status(403).json({
+        success: false,
+        message: "Admin registration is restricted",
       });
     }
 
@@ -54,10 +67,10 @@ export const registerUser = async (req, res) => {
       name: `${firstName.trim()} ${lastName.trim()}`,
       email: email.toLowerCase(),
       password,
-      role: role || 'buyer'
+      role: role || "buyer",
     });
 
-    const token = generateToken(newUser._id);
+    const token = generateToken(newUser._id,newUser.role);
 
     res.status(201).json({
       success: true,
@@ -66,15 +79,15 @@ export const registerUser = async (req, res) => {
         id: newUser._id,
         name: newUser.name,
         email: newUser.email,
-        role: newUser.role
+        role: newUser.role,
       },
-      token
+      token,
     });
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error("Registration error:", error);
     res.status(500).json({
       success: false,
-      message: "Error registering user"
+      message: "Error registering user",
     });
   }
 };
@@ -86,15 +99,17 @@ export const loginUser = async (req, res) => {
     if (!email?.trim() || !password?.trim()) {
       return res.status(400).json({
         success: false,
-        message: "Email and password are required"
+        message: "Email and password are required",
       });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+    const user = await User.findOne({ email: email.toLowerCase() }).select(
+      "+password"
+    );
     if (!user) {
-      return res.status(401).json({
+      return res.status(404).json({
         success: false,
-        message: "Invalid credentials"
+        message: "No User found with this Email",
       });
     }
 
@@ -102,11 +117,11 @@ export const loginUser = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials"
+        message: "Invalid Password",
       });
     }
 
-    const token = generateToken(user._id);
+    const token = generateToken(user._id, user.role);
 
     res.status(200).json({
       success: true,
@@ -115,15 +130,15 @@ export const loginUser = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role,
       },
-      token
+      token,
     });
   } catch (error) {
-    console.error('Login error:', error);
+    console.error("Login error:", error);
     res.status(500).json({
       success: false,
-      message: "Error logging in"
+      message: "Error logging in",
     });
   }
 };
@@ -134,24 +149,30 @@ export const getUserProfile = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found"
+        message: "User not found",
       });
+    }
+
+    const userProfile = {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
+
+    if (user.role === "admin") {
+      userProfile.extraData = "Admin-specific data or stats";
     }
 
     res.status(200).json({
       success: true,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      }
+      user: userProfile,
     });
   } catch (error) {
-    console.error('Profile fetch error:', error);
+    console.error("Profile fetch error:", error);
     res.status(500).json({
       success: false,
-      message: "Error fetching user profile"
+      message: "Error fetching user profile",
     });
   }
 };
