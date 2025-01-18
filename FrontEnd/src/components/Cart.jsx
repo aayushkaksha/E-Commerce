@@ -9,9 +9,11 @@ import {
 } from '@mui/material'
 import { X as XIcon } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export default function Cart({ open, onClose }) {
   const [products, setProducts] = useState([])
+  const navigate = useNavigate()
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -51,6 +53,37 @@ export default function Cart({ open, onClose }) {
         })
     }
   }, [open])
+
+  const handleCheckout = async () => {
+    try {
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({
+          items: products.map((item) => ({
+            productId: item.productId._id,
+            quantity: item.quantity,
+          })),
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Checkout failed')
+      }
+
+      // Clear cart after successful checkout
+      setProducts([])
+      onClose()
+      // Navigate to checkout page or show success message
+      navigate('/checkout')
+    } catch (error) {
+      console.error('Checkout error:', error)
+      // Show error message to user
+    }
+  }
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth='md' fullWidth>
@@ -107,6 +140,8 @@ export default function Cart({ open, onClose }) {
             color='primary'
             fullWidth
             className='mt-4'
+            onClick={handleCheckout}
+            disabled={products.length === 0}
           >
             Checkout
           </Button>

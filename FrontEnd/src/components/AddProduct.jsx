@@ -12,13 +12,33 @@ const AddProduct = () => {
     sizes: [{ name: '', inStock: true }],
     highlights: [''],
   })
+  const [feedback, setFeedback] = useState({ type: '', message: '' })
 
   const { createProduct } = useProductStore()
 
   const handleAddProduct = async () => {
+    setFeedback({ type: '', message: '' }) // Clear previous feedback
+
     const { success, message } = await createProduct(newProduct)
-    console.log('Success:', success)
-    console.log('Message:', message)
+
+    if (success) {
+      setFeedback({ type: 'success', message: 'Product added successfully!' })
+      // Reset form
+      setNewProduct({
+        name: '',
+        price: '',
+        image: '',
+        desc: '',
+        colors: [{ name: '', hex: '' }],
+        sizes: [{ name: '', inStock: true }],
+        highlights: [''],
+      })
+    } else {
+      setFeedback({
+        type: 'error',
+        message: message || 'Failed to add product',
+      })
+    }
   }
 
   const handleAddField = (key, value) => {
@@ -39,6 +59,18 @@ const AddProduct = () => {
   return (
     <div className='m-0 flex justify-center items-center'>
       <div className='bg-white rounded-lg p-6 w-full'>
+        {feedback.message && (
+          <div
+            className={`mb-4 p-3 rounded ${
+              feedback.type === 'success'
+                ? 'bg-green-100 text-green-700'
+                : 'bg-red-100 text-red-700'
+            }`}
+          >
+            {feedback.message}
+          </div>
+        )}
+
         <div className='flex flex-col items-center space-y-6'>
           <div className='flex flex-col w-full space-y-4'>
             {/* Product Name */}
@@ -276,8 +308,15 @@ const AddProduct = () => {
             <button
               type='button'
               onClick={handleAddProduct}
+              disabled={
+                !newProduct.name || !newProduct.price || !newProduct.image
+              }
               aria-label='Add a new product'
-              className='mt-4 bg-blue-500 text-white px-6 py-3 rounded-md shadow-md hover:bg-blue-600 transition duration-200'
+              className={`mt-4 px-6 py-3 rounded-md shadow-md transition duration-200 ${
+                !newProduct.name || !newProduct.price || !newProduct.image
+                  ? 'bg-gray-300 cursor-not-allowed'
+                  : 'bg-blue-500 text-white hover:bg-blue-600'
+              }`}
             >
               Add Product
             </button>

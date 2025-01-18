@@ -1,16 +1,20 @@
 import express from 'express'
-import { getProducts, createProduct, deleteProduct, updatedProduct } from '../controller/product.controller.js'
+import {
+  getProducts,
+  createProduct,
+  deleteProduct,
+  updatedProduct,
+} from '../controller/product.controller.js'
+import { protect, authorize } from '../middleware/auth.middleware.js'
 
-const router = express.Router();
+const router = express.Router()
 
+// Allow all authenticated users to view products
+router.get('/', protect, getProducts)
 
-router.get("/", getProducts)
+// Restrict these operations to sellers only
+router.post('/', protect, authorize('seller'), createProduct)
+router.delete('/:id', protect, authorize('seller'), deleteProduct)
+router.put('/:id', protect, authorize('seller'), updatedProduct)
 
-router.post("/", createProduct)
-
-router.delete("/:id", deleteProduct)
-
-// put is used for changing all the data and patch is used to change only specific data
-router.put("/:id", updatedProduct)
-
-export default router;
+export default router

@@ -1,15 +1,58 @@
 import { Heart, Plus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useProductStore } from '../store/product'
 
 const UCard = () => {
   const navigate = useNavigate()
   const { products, fetchProducts, loading, error } = useProductStore()
+  const [feedback, setFeedback] = useState({ type: '', message: '' })
 
   useEffect(() => {
-    fetchProducts() // Fetch products on component mount
+    fetchProducts()
   }, [fetchProducts])
+
+  const addToCart = async (productId) => {
+    try {
+      const response = await fetch('/api/cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ productId, quantity: 1 }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to add to cart')
+      }
+
+      setFeedback({ type: 'success', message: 'Added to cart!' })
+    } catch (error) {
+      setFeedback({ type: 'error', message: error.message })
+    }
+  }
+
+  const addToWishlist = async (productId) => {
+    try {
+      const response = await fetch('/api/wishlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ productId }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to add to wishlist')
+      }
+
+      setFeedback({ type: 'success', message: 'Added to wishlist!' })
+    } catch (error) {
+      setFeedback({ type: 'error', message: error.message })
+    }
+  }
 
   const handleCardClick = (id) => {
     navigate(`/product/${id}`)
@@ -20,6 +63,16 @@ const UCard = () => {
 
   return (
     <div className='main-container flex justify-left items-center font-poppins'>
+      {feedback.message && (
+        <div
+          className={`fixed top-4 right-4 p-4 rounded-lg ${
+            feedback.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+          } text-white`}
+        >
+          {feedback.message}
+        </div>
+      )}
+
       <div className='w-full grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 my-6 px-4'>
         {products.map((item) => (
           <div
@@ -33,10 +86,16 @@ const UCard = () => {
                 alt={item.name}
                 onClick={() => handleCardClick(item._id)}
               />
-              <button className='absolute bottom-2 right-2 bg-white rounded-full p-1 shadow hover:shadow-md transition-colors'>
+              <button
+                onClick={() => addToWishlist(item._id)}
+                className='absolute bottom-2 right-2 bg-white rounded-full p-1 shadow hover:shadow-md transition-colors'
+              >
                 <Heart className='w-5 h-5 text-gray-500 hover:text-red-500' />
               </button>
-              <button className='absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:shadow-md'>
+              <button
+                onClick={() => addToCart(item._id)}
+                className='absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:shadow-md'
+              >
                 <Plus className='w-5 h-5 text-gray-500' />
               </button>
             </div>
