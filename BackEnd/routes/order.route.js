@@ -4,6 +4,7 @@ import {
   getOrders,
   getSellerOrders,
   updateOrderStatus,
+  getOrderStatus,
 } from '../controller/order.controller.js'
 import { protect, authorize } from '../middleware/auth.middleware.js'
 
@@ -21,5 +22,8 @@ router.patch(
   authorize('seller'),
   updateOrderStatus
 )
+
+// Add new route for getting order status
+router.get('/:orderId/status', protect, getOrderStatus)
 
 export default router

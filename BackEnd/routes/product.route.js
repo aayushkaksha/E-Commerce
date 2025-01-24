@@ -10,7 +10,7 @@ import { protect, authorize } from '../middleware/auth.middleware.js'
 const router = express.Router()
 
 // Allow all authenticated users to view products
-router.get('/', protect, getProducts)
+router.get('/', getProducts)
 
 // Restrict these operations to sellers only
 router.post('/', protect, authorize('seller'), createProduct)

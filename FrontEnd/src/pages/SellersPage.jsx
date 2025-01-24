@@ -50,23 +50,6 @@ const SellersPage = () => {
     <div className='bg-gray-100 pt-6 min-h-screen font-poppins'>
       {/* Wrapper */}
       <div className='p-6 max-w-screen-xl flex flex-col lg:flex-row lg:space-x-8 items-center lg:items-start justify-between mx-auto bg-white rounded-lg shadow-md'>
-        {/* Profile Section */}
-        <div className='w-full lg:w-1/3 m-3 flex flex-col items-center text-center mx-auto'>
-          <div className='w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-md'>
-            <span className='text-white text-4xl font-semibold'>
-              {user.name ? user.name.charAt(0) : 'U'}
-            </span>
-          </div>
-          <div className='mt-6 space-y-2'>
-            <h2 className='text-xl sm:text-2xl md:text-3xl font-bold text-gray-800'>
-              {user.name || 'Loading...'}
-            </h2>
-            <p className='text-sm sm:text-base text-gray-600'>
-              {user.email || 'Loading...'}
-            </p>
-          </div>
-        </div>
-
         {/* AddProduct Section */}
         <div className='flex-1 w-full lg:w-2/3 mt-6 lg:mt-0'>
           <div className='bg-gray-50 p-6 rounded-lg shadow-sm'>

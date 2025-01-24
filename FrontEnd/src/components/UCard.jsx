@@ -12,6 +12,16 @@ const UCard = () => {
     fetchProducts()
   }, [fetchProducts])
 
+  // Clear feedback after 3 seconds
+  useEffect(() => {
+    if (feedback.message) {
+      const timer = setTimeout(() => {
+        setFeedback({ type: '', message: '' })
+      }, 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [feedback])
+
   const addToCart = async (productId) => {
     try {
       const response = await fetch('/api/cart', {
@@ -62,17 +72,7 @@ const UCard = () => {
   if (error) return <p>Error: {error}</p>
 
   return (
-    <div className='main-container flex justify-left items-center font-poppins'>
-      {feedback.message && (
-        <div
-          className={`fixed top-4 right-4 p-4 rounded-lg ${
-            feedback.type === 'success' ? 'bg-green-500' : 'bg-red-500'
-          } text-white`}
-        >
-          {feedback.message}
-        </div>
-      )}
-
+    <div className='main-container flex justify-left items-center font-poppins relative'>
       <div className='w-full grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 my-6 px-4'>
         {products.map((item) => (
           <div
@@ -108,6 +108,17 @@ const UCard = () => {
           </div>
         ))}
       </div>
+
+      {/* Feedback Message */}
+      {feedback.message && (
+        <div
+          className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 ease-in-out ${
+            feedback.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+          } text-white`}
+        >
+          {feedback.message}
+        </div>
+      )}
     </div>
   )
 }

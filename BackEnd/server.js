@@ -35,7 +35,6 @@ connectDB()
     console.error('Failed to connect to MongoDB:', error.message)
     process.exit(1)
   })
-
 // Generic error handler (Catch-all)
 app.use((err, req, res, next) => {
   console.error(err.stack)

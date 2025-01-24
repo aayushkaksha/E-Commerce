@@ -9,7 +9,7 @@ const AddProduct = () => {
     image: '',
     desc: '',
     colors: [{ name: '', hex: '' }],
-    sizes: [{ name: '', inStock: true }],
+    sizes: [{ name: '', inStock: true, stockAmount: 0 }],
     highlights: [''],
   })
   const [feedback, setFeedback] = useState({ type: '', message: '' })
@@ -30,7 +30,7 @@ const AddProduct = () => {
         image: '',
         desc: '',
         colors: [{ name: '', hex: '' }],
-        sizes: [{ name: '', inStock: true }],
+        sizes: [{ name: '', inStock: true, stockAmount: 0 }],
         highlights: [''],
       })
     } else {
@@ -232,13 +232,29 @@ const AddProduct = () => {
                       {index === newProduct.sizes.length - 1 && (
                         <Plus
                           onClick={() =>
-                            handleAddField('sizes', { name: '', inStock: true })
+                            handleAddField('sizes', {
+                              name: '',
+                              inStock: true,
+                              stockAmount: 0,
+                            })
                           }
                           className='cursor-pointer text-blue-500'
                         />
                       )}
                     </div>
                   </label>
+                  <input
+                    type='number'
+                    min='0'
+                    value={size.stockAmount}
+                    placeholder='Stock Amount'
+                    onChange={(e) => {
+                      const updatedSizes = [...newProduct.sizes]
+                      updatedSizes[index].stockAmount = parseInt(e.target.value)
+                      setNewProduct({ ...newProduct, sizes: updatedSizes })
+                    }}
+                    className='w-24 p-2 border border-gray-300 rounded-md text-sm ml-2'
+                  />
                   <select
                     value={size.inStock}
                     onChange={(e) => {

@@ -1,8 +1,9 @@
+import React from 'react'
 import { useState, useEffect } from 'react'
 import { X, ShoppingCart } from 'lucide-react'
 import { Box, Button, Typography, Modal } from '@mui/material'
 
-const Wishlist = () => {
+const Wishlist = ({ wishlistItems }) => {
   const [items, setItems] = useState([])
   const [open, setOpen] = useState(false)
   const [itemToRemove, setItemToRemove] = useState(null)
@@ -107,7 +108,7 @@ const Wishlist = () => {
             </tr>
           )}
           {items.map((item) => (
-            <tr key={item.productId}>
+            <tr key={item._id || `${item.productId._id}-${item.addedAt}`}>
               <td className='py-4 px-4'>
                 <div className='flex items-center space-x-4'>
                   <img

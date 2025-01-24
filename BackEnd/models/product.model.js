@@ -25,8 +25,13 @@ const productSchema = new mongoose.Schema(
     ],
     sizes: [
       {
-        name: { type: String, required: true }, // Size label
-        inStock: { type: Boolean, default: true }, // Stock availability
+        name: String,
+        inStock: Boolean,
+        stockAmount: {
+          // Add this field
+          type: Number,
+          default: 0,
+        },
       },
     ],
     highlights: {

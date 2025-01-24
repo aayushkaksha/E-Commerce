@@ -8,7 +8,7 @@ const OrderHistory = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('/api/orders', {
+        const response = await fetch('/api/orders/my-orders', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
@@ -19,7 +19,7 @@ const OrderHistory = () => {
         }
 
         const data = await response.json()
-        setOrders(data.orders)
+        setOrders(data.data)
       } catch (error) {
         setError(error.message)
       } finally {
@@ -41,7 +41,6 @@ const OrderHistory = () => {
           <thead>
             <tr className='bg-gray-100'>
               <th className='px-6 py-3 text-left'>Order ID</th>
-              <th className='px-6 py-3 text-left'>Customer</th>
               <th className='px-6 py-3 text-left'>Products</th>
               <th className='px-6 py-3 text-left'>Total Amount</th>
               <th className='px-6 py-3 text-left'>Status</th>
@@ -52,27 +51,16 @@ const OrderHistory = () => {
             {orders.map((order) => (
               <tr key={order._id} className='border-b'>
                 <td className='px-6 py-4'>{order._id}</td>
-                <td className='px-6 py-4'>{order.customer.name}</td>
                 <td className='px-6 py-4'>
                   {order.items.map((item) => (
                     <div key={item._id}>
-                      {item.product.name} x {item.quantity}
+                      {item.productId.name} x {item.quantity}
                     </div>
                   ))}
                 </td>
                 <td className='px-6 py-4'>Rs. {order.totalAmount}</td>
                 <td className='px-6 py-4'>
-                  <span
-                    className={`px-2 py-1 rounded-full text-sm ${
-                      order.status === 'completed'
-                        ? 'bg-green-100 text-green-800'
-                        : order.status === 'pending'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}
-                  >
-                    {order.status}
-                  </span>
+                  <OrderStatus orderId={order._id} />
                 </td>
                 <td className='px-6 py-4'>
                   {new Date(order.createdAt).toLocaleDateString()}

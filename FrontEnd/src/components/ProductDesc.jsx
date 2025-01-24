@@ -7,7 +7,37 @@ export default function ProductDesc() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [product, setProduct] = useState(null)
+  const [feedback, setFeedback] = useState({ type: '', message: '' })
 
+  const addToCart = async (productId) => {
+    try {
+      const response = await fetch('/api/cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ productId, quantity: 1 }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to add to cart')
+      }
+
+      setFeedback({ type: 'success', message: 'Added to cart!' })
+    } catch (error) {
+      setFeedback({ type: 'error', message: error.message })
+    }
+  }
+
+  useEffect(() => {
+    if (feedback.message) {
+      const timer = setTimeout(() => {
+        setFeedback({ type: '', message: '' })
+      }, 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [feedback])
   // Fetch products if not already loaded
   useEffect(() => {
     if (products.length === 0) {
@@ -103,7 +133,10 @@ export default function ProductDesc() {
           </div>
 
           <div className='mt-6 flex space-x-4'>
-            <button className='bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700'>
+            <button
+              className='bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700'
+              onClick={() => addToCart(product._id)}
+            >
               Add to Cart
             </button>
             <button
@@ -115,6 +148,16 @@ export default function ProductDesc() {
           </div>
         </div>
       </div>
+      {/* Feedback Message */}
+      {feedback.message && (
+        <div
+          className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 ease-in-out ${
+            feedback.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+          } text-white`}
+        >
+          {feedback.message}
+        </div>
+      )}
     </div>
   )
 }
