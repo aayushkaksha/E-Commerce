@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 import { LogOut, Store } from 'lucide-react' // Importing the LogOut icon
 import Wishlist from '../components/Wishlist'
 import { NavLink, useNavigate } from 'react-router-dom'
+import SellersPageContent from './SellersPage' // Add this import at the top
 
 const Profile = () => {
   const navigate = useNavigate()
-  const [user, setUser] = useState({ name: '', email: '' })
+  const [user, setUser] = useState({ name: '', email: '', role: '' })
 
   // Fetch user data
   useEffect(() => {
@@ -58,7 +59,7 @@ const Profile = () => {
       <div className='container mx-auto px-4 py-6'>
         <div className='mx-8'>
           {/* Profile Info and Buttons */}
-          <div className='p-6 max-w-screen-lg flex flex-col md:flex-row items-center md:justify-between bg-white shadow rounded-lg'>
+          <div className='p-6 max-w-screen-lg mx-auto flex flex-col md:flex-row items-center justify-between bg-white shadow rounded-lg'>
             {/* Profile Section */}
             <div className='flex items-center space-x-6'>
               <div className='w-20 h-20 rounded-full overflow-hidden shadow-lg'>
@@ -69,25 +70,15 @@ const Profile = () => {
                 />
               </div>
               <div>
-                <h2 className='text-3xl font-bold text-gray-800'>
+                <h2 className='text-3xl font-bold text-gray-800 text-center'>
                   {user.name}
                 </h2>
-                <p className='text-gray-600'>{user.email}</p>
+                <p className='text-gray-600 text-center'>{user.email}</p>
               </div>
             </div>
 
             {/* Buttons Section */}
-            <div className='flex flex-col items-stretch space-y-3 mt-6 custom-880:mt-0'>
-              {user.role === 'buyer' && (
-                <NavLink
-                  to='/Seller'
-                  className='flex items-center space-x-2 bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-500 transition focus:ring-2 focus:ring-blue-300'
-                  aria-label='Become a Seller'
-                >
-                  <Store className='w-5 h-5' />
-                  <span>Be a Seller</span>
-                </NavLink>
-              )}
+            <div className='flex flex-col items-center space-y-3 mt-6 md:mt-0 md:ml-8'>
               <button
                 onClick={handleLogout}
                 className='flex items-center space-x-2 bg-red-600 text-white px-5 py-2 rounded-lg shadow hover:bg-red-500 transition focus:ring-2 focus:ring-red-300'
@@ -101,12 +92,18 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Wishlist Section */}
+      {/* Conditional Rendering Section */}
       <div className='container mx-auto px-4 py-6'>
-        <div className='bg-white shadow p-6 rounded-lg'>
-          <h2 className='text-2xl font-bold text-gray-900 mb-4'>My Wishlist</h2>
-          <Wishlist />
-        </div>
+        {user.role === 'seller' ? (
+          <SellersPageContent />
+        ) : (
+          <div className='bg-white shadow p-6 rounded-lg'>
+            <h2 className='text-2xl font-bold text-gray-900 mb-4'>
+              My Wishlist
+            </h2>
+            <Wishlist />
+          </div>
+        )}
       </div>
     </div>
   )

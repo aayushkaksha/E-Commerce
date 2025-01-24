@@ -7,81 +7,69 @@ import {
   Button,
   Typography,
 } from '@mui/material'
-import { X as XIcon } from 'lucide-react'
+import { X as XIcon, Trash2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function Cart({ open, onClose }) {
   const [products, setProducts] = useState([])
   const navigate = useNavigate()
-
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   useEffect(() => {
     if (open) {
-      setLoading(true) // Start loading
-      setError(null) // Reset any previous errors
-
-      // Fetch cart data
-      fetch('/api/cart', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Need to login')
-          }
-          return response.json()
-        })
-        .then((data) => {
-          // Check the correct structure of the response and handle data
-          if (data?.data?.items) {
-            setProducts(data.data.items)
-          } else {
-            setProducts([]) // If no items in cart
-          }
-        })
-        .catch((error) => {
-          console.error('Error:', error)
-          setError(error.message) // Set error state
-        })
-        .finally(() => {
-          setLoading(false) // Stop loading
-        })
+      fetchCartItems()
     }
   }, [open])
 
-  const handleCheckout = async () => {
+  const fetchCartItems = async () => {
+    setLoading(true)
+    setError(null)
+
     try {
-      const response = await fetch('/api/orders', {
-        method: 'POST',
+      const response = await fetch('/api/cart', {
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify({
-          items: products.map((item) => ({
-            productId: item.productId._id,
-            quantity: item.quantity,
-          })),
-        }),
       })
 
       if (!response.ok) {
-        throw new Error('Checkout failed')
+        throw new Error('Failed to fetch cart items')
       }
 
-      // Clear cart after successful checkout
-      setProducts([])
-      onClose()
-      // Navigate to checkout page or show success message
-      navigate('/checkout')
+      const data = await response.json()
+      setProducts(data.data?.items || [])
     } catch (error) {
-      console.error('Checkout error:', error)
-      // Show error message to user
+      console.error('Error:', error)
+      setError(error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleCheckout = () => {
+    onClose()
+    navigate('/checkout')
+  }
+
+  const clearCart = async () => {
+    try {
+      const response = await fetch('/api/cart/clear', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to clear cart')
+      }
+
+      // Refresh cart items after clearing
+      fetchCartItems()
+    } catch (error) {
+      setError('Failed to clear cart')
     }
   }
 
@@ -97,12 +85,10 @@ export default function Cart({ open, onClose }) {
       </DialogTitle>
 
       <DialogContent dividers>
-        {loading && <Typography>Loading cart...</Typography>}{' '}
-        {/* Show loading state */}
-        {error && <Typography color='error'>{error}</Typography>}{' '}
-        {/* Show error message */}
-        {products.length === 0 && !loading && !error ? (
-          <Typography>No items in your cart</Typography> // If cart is empty
+        {loading && <Typography>Loading cart...</Typography>}
+        {error && <Typography color='error'>{error}</Typography>}
+        {!loading && !error && products.length === 0 ? (
+          <Typography>Your cart is empty</Typography>
         ) : (
           products.map((product) => (
             <div
@@ -110,26 +96,34 @@ export default function Cart({ open, onClose }) {
               className='flex py-4 border-b last:border-none'
             >
               <img
-                src={product.productId.imageSrc}
-                alt={product.productId.imageAlt}
+                src={product.productId.image}
+                alt={product.productId.name}
                 className='w-24 h-24 object-cover rounded-md mr-4'
               />
-              <div className='flex flex-col justify-between'>
+              <div className='flex flex-col justify-between flex-grow'>
                 <Typography variant='body1'>
                   {product.productId.name}
                 </Typography>
                 <Typography variant='body2' color='text.secondary'>
-                  Color: {product.productId.color}
-                </Typography>
-                <Typography variant='body2' color='text.secondary'>
                   Quantity: {product.quantity}
                 </Typography>
+                <Typography variant='body1'>
+                  ${(product.productId.price * product.quantity).toFixed(2)}
+                </Typography>
               </div>
-              <Typography variant='body1' className='ml-auto'>
-                ${product.productId.price.toFixed(2)}
-              </Typography>
             </div>
           ))
+        )}
+        {!loading && !error && products.length > 0 && (
+          <Button
+            onClick={clearCart}
+            color='error'
+            startIcon={<Trash2 className='w-4 h-4' />}
+            className='mt-4'
+            fullWidth
+          >
+            Clear Cart
+          </Button>
         )}
       </DialogContent>
 

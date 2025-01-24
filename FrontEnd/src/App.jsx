@@ -10,12 +10,14 @@ import Message from './pages/Message'
 import NavBar from './components/NavBar'
 import Shop from './pages/Shop'
 import SellersPage from './pages/SellersPage'
-import UCard from './components/UCard'
 import LoginForm from './pages/LoginForm'
 import Signup from './pages/Signup'
 import ProductDesc from './components/ProductDesc'
 import Test from './pages/Test'
 import ProtectedRoute from './store/ProtectedRoute'
+import OrderHistory from './components/OrderHistory'
+import Checkout from './pages/Checkout'
+import OrderConfirmation from './pages/OrderConfirmation'
 
 const App = () => {
   return (
@@ -48,10 +50,23 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path='/order-history'
+                element={
+                  <ProtectedRoute allowedRoles={['seller']}>
+                    <OrderHistory />
+                  </ProtectedRoute>
+                }
+              />
               <Route path='/product/:id' element={<ProductDesc />} />
               <Route path='/login' element={<LoginForm />} />
               <Route path='/signup' element={<Signup />} />
               <Route path='/Test' element={<Test />} />
+              <Route path='/checkout' element={<Checkout />} />
+              <Route
+                path='/order-confirmation/:orderId'
+                element={<OrderConfirmation />}
+              />
             </Routes>
           </main>
         </div>

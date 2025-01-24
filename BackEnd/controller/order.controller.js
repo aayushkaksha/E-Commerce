@@ -5,52 +5,55 @@ import Product from '../models/product.model.js'
 // Create new order
 export const createOrder = async (req, res) => {
   try {
-    const { shippingAddress } = req.body
+    const { items, shippingAddress, paymentMethod, deliveryMethod } = req.body
 
-    // Get user's cart
-    const cart = await Cart.findOne({ userId: req.user.id }).populate(
-      'items.productId'
-    )
+    // Calculate shipping cost based on delivery method
+    const shippingCost = deliveryMethod === 'express' ? 15 : 5
 
-    if (!cart || cart.items.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Cart is empty',
-      })
+    // Verify stock availability and update stock
+    for (const item of items) {
+      const product = await Product.findById(item.productId)
+      const sizeIndex = product.sizes.findIndex((s) => s.name === item.size)
+
+      if (
+        !product ||
+        sizeIndex === -1 ||
+        product.sizes[sizeIndex].stockAmount < item.quantity
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: `Insufficient stock for product: ${product.name}`,
+        })
+      }
+
+      // Reduce stock
+      product.sizes[sizeIndex].stockAmount -= item.quantity
+      if (product.sizes[sizeIndex].stockAmount === 0) {
+        product.sizes[sizeIndex].inStock = false
+      }
+      await product.save()
     }
 
-    // Calculate total amount and prepare order items
-    const orderItems = cart.items.map((item) => ({
-      productId: item.productId._id,
-      quantity: item.quantity,
-      price: item.productId.price,
-    }))
-
-    const totalAmount = orderItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    )
-
-    // Create order
-    const order = new Order({
+    const order = await Order.create({
       userId: req.user.id,
-      items: orderItems,
-      totalAmount,
+      items,
       shippingAddress,
-      status: 'pending',
+      paymentMethod,
+      deliveryMethod,
+      shippingCost,
+      totalAmount:
+        items.reduce((total, item) => total + item.price * item.quantity, 0) +
+        shippingCost,
     })
 
-    await order.save()
-
-    // Clear cart
-    cart.items = []
-    await cart.save()
+    console.log(order)
 
     res.status(201).json({
       success: true,
       data: order,
     })
   } catch (error) {
+    console.error('Order creation error:', error)
     res.status(500).json({
       success: false,
       message: 'Error creating order',
@@ -130,6 +133,31 @@ export const updateOrderStatus = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error updating order status',
+    })
+  }
+}
+
+// Get order status
+export const getOrderStatus = async (req, res) => {
+  try {
+    const { orderId } = req.params
+    const order = await Order.findById(orderId)
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found',
+      })
+    }
+
+    res.status(200).json({
+      success: true,
+      status: order.status,
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching order status',
     })
   }
 }
