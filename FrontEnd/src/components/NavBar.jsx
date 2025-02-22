@@ -110,15 +110,15 @@ const NavBar = () => {
               <MailIcon className='w-5 h-5' />
             </NavLink>
 
-            {user?.role === 'seller' && (
+            {/* {user?.role === 'seller' && (
               <NavLink
-                to='/order-history'
+                to='/orders/:orderId'
                 className='relative p-2 hover:bg-gray-100 rounded-full'
                 aria-label='Order History'
               >
                 <History className='w-5 h-5' />
               </NavLink>
-            )}
+            )} */}
 
             {user?.role === 'buyer' && (
               <button

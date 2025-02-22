@@ -8,7 +8,7 @@ const OrderHistory = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('/api/orders/my-orders', {
+        const response = await fetch('/api/orders', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },

@@ -130,22 +130,6 @@ const OrderConfirmation = () => {
                   ))}
                 </div>
               </div>
-
-              {/* Order Summary */}
-              <div className='border-t pt-4'>
-                <div className='flex justify-between mb-2'>
-                  <span>Subtotal</span>
-                  <span>${order.subtotal?.toFixed(2)}</span>
-                </div>
-                <div className='flex justify-between mb-2'>
-                  <span>Shipping</span>
-                  <span>${order.shipping?.toFixed(2)}</span>
-                </div>
-                <div className='flex justify-between font-bold text-lg'>
-                  <span>Total</span>
-                  <span>${order.total?.toFixed(2)}</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>

@@ -6,27 +6,51 @@ import Product from '../models/product.model.js'
 export const createOrder = async (req, res) => {
   try {
     const { items, shippingAddress, paymentMethod, deliveryMethod } = req.body
-
-    // Calculate shipping cost based on delivery method
     const shippingCost = deliveryMethod === 'express' ? 15 : 5
 
     // Verify stock availability and update stock
     for (const item of items) {
       const product = await Product.findById(item.productId)
+      if (!product) {
+        return res.status(400).json({
+          success: false,
+          message: `Product not found: ${item.productId}`,
+        })
+      }
+
+      // Find the specific size in the product's sizes array
       const sizeIndex = product.sizes.findIndex((s) => s.name === item.size)
 
+      // Debug logging
+      console.log('Product:', product.name)
+      console.log('Requested size:', item.size)
+      console.log('Size index:', sizeIndex)
+      console.log(
+        'Available stock:',
+        sizeIndex !== -1
+          ? product.sizes[sizeIndex].stockAmount
+          : 'Size not found'
+      )
+      console.log('Requested quantity:', item.quantity)
+
+      if (sizeIndex === -1) {
+        return res.status(400).json({
+          success: false,
+          message: `Size ${item.size} not found for product: ${product.name}`,
+        })
+      }
+
       if (
-        !product ||
-        sizeIndex === -1 ||
+        !product.sizes[sizeIndex].inStock ||
         product.sizes[sizeIndex].stockAmount < item.quantity
       ) {
         return res.status(400).json({
           success: false,
-          message: `Insufficient stock for product: ${product.name}`,
+          message: `Insufficient stock for product: ${product.name} (${item.size})`,
         })
       }
 
-      // Reduce stock
+      // Update stock
       product.sizes[sizeIndex].stockAmount -= item.quantity
       if (product.sizes[sizeIndex].stockAmount === 0) {
         product.sizes[sizeIndex].inStock = false
@@ -158,6 +182,31 @@ export const getOrderStatus = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error fetching order status',
+    })
+  }
+}
+
+export const getOrderById = async (req, res) => {
+  try {
+    const { orderId } = req.params
+    const order = await Order.findById(orderId).populate('items.productId')
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found',
+      })
+    }
+
+    res.status(200).json({
+      success: true,
+      data: order,
+    })
+  } catch (error) {
+    console.error('Error fetching order:', error)
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching order',
     })
   }
 }

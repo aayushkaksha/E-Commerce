@@ -30,7 +30,7 @@ const productSchema = new mongoose.Schema(
         stockAmount: {
           // Add this field
           type: Number,
-          default: 0,
+          default: 1,
         },
       },
     ],

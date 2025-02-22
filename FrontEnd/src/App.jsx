@@ -51,7 +51,7 @@ const App = () => {
                 }
               />
               <Route
-                path='/order-history'
+                path='/orders/:orderId'
                 element={
                   <ProtectedRoute allowedRoles={['seller']}>
                     <OrderHistory />

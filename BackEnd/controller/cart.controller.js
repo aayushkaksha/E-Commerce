@@ -1,4 +1,5 @@
 import Cart from '../models/cart.model.js'
+import Product from '../models/product.model.js'
 
 // Get Cart
 export const getCart = async (req, res) => {
@@ -26,37 +27,81 @@ export const getCart = async (req, res) => {
 
 // Add to Cart
 export const addToCart = async (req, res) => {
-  const { productId, quantity = 1 } = req.body
   try {
-    let cart = await Cart.findOne({ userId: req.user.id })
+    const { productId, quantity, size, price } = req.body
 
-    if (!cart) {
-      cart = new Cart({ userId: req.user.id, items: [] })
+    // Validate product and size existence
+    const product = await Product.findById(productId)
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found',
+      })
     }
 
-    const itemIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
+    // Find the specific size in product
+    const sizeInfo = product.sizes.find((s) => s.name === size)
+    if (!sizeInfo) {
+      return res.status(400).json({
+        success: false,
+        message: 'Selected size not found',
+      })
+    }
+
+    // Check if size is in stock and has sufficient quantity
+    if (!sizeInfo.inStock || sizeInfo.stockAmount < quantity) {
+      return res.status(400).json({
+        success: false,
+        message: 'Selected size is out of stock or insufficient quantity',
+      })
+    }
+
+    // Find or create cart
+    let cart = await Cart.findOne({ userId: req.user.id })
+    if (!cart) {
+      cart = await Cart.create({
+        userId: req.user.id,
+        items: [],
+      })
+    }
+
+    // Check if item with same product and size exists
+    const existingItemIndex = cart.items.findIndex(
+      (item) => item.productId.toString() === productId && item.size === size
     )
 
-    if (itemIndex > -1) {
-      cart.items[itemIndex].quantity += quantity
+    if (existingItemIndex > -1) {
+      // Update quantity if item exists
+      const newQuantity = cart.items[existingItemIndex].quantity + quantity
+      if (newQuantity > sizeInfo.stockAmount) {
+        return res.status(400).json({
+          success: false,
+          message: 'Cannot add more items than available in stock',
+        })
+      }
+      cart.items[existingItemIndex].quantity = newQuantity
     } else {
-      cart.items.push({ productId, quantity })
+      // Add new item
+      cart.items.push({
+        productId,
+        quantity,
+        size,
+        price,
+      })
     }
 
     await cart.save()
 
-    // Populate the items before sending response
-    await cart.populate('items.productId')
-
     res.status(200).json({
       success: true,
+      message: 'Item added to cart successfully',
       data: cart,
     })
   } catch (error) {
+    console.error('Add to cart error:', error)
     res.status(500).json({
       success: false,
-      message: 'Server Error',
+      message: 'Error adding item to cart',
     })
   }
 }

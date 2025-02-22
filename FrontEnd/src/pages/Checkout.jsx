@@ -39,6 +39,7 @@ const Checkout = () => {
       const data = await response.json()
       setCartItems(data.data.items)
       setLoading(false)
+      return data.data.items
     } catch (error) {
       setError('Error fetching cart items')
       setLoading(false)
@@ -63,11 +64,15 @@ const Checkout = () => {
     }
 
     try {
+      // Get cart items with their sizes
+      const cartItems = await fetchCartItems()
+
       const orderData = {
         items: cartItems.map((item) => ({
           productId: item.productId._id,
           quantity: item.quantity,
-          price: item.productId.price,
+          price: item.price,
+          size: item.size,
         })),
         shippingAddress: {
           street: formData.address,
@@ -76,10 +81,10 @@ const Checkout = () => {
           zipCode: formData.postalCode,
           country: formData.country,
         },
-        paymentMethod: formData.paymentMethod || 'card',
-        deliveryMethod: formData.deliveryMethod || 'standard',
+        paymentMethod: 'card',
+        deliveryMethod: 'standard',
         totalAmount: cartItems.reduce(
-          (total, item) => total + item.productId.price * item.quantity,
+          (total, item) => total + item.price * item.quantity,
           0
         ),
       }
