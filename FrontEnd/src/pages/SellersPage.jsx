@@ -47,12 +47,12 @@ const SellersPage = () => {
   }, [fetchProducts, navigate])
 
   return (
-    <div className='bg-gray-100 pt-6 min-h-screen font-poppins'>
+    <div className='pt-6 min-h-screen font-poppins'>
       {/* Wrapper */}
       <div className='p-6 max-w-screen-xl flex flex-col lg:flex-row lg:space-x-8 items-center lg:items-start justify-between mx-auto bg-white rounded-lg shadow-md'>
         {/* AddProduct Section */}
         <div className='flex-1 w-full lg:w-2/3 mt-6 lg:mt-0'>
-          <div className='bg-gray-50 p-6 rounded-lg shadow-sm'>
+          <div className='p-6 rounded-lg'>
             <h3 className='text-lg font-semibold text-gray-800 mb-4'>
               Add New Product
             </h3>

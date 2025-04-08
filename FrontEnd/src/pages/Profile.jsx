@@ -3,12 +3,12 @@ import { LogOut, Store } from 'lucide-react' // Importing the LogOut icon
 import Wishlist from '../components/Wishlist'
 import { NavLink, useNavigate } from 'react-router-dom'
 import SellersPageContent from './SellersPage' // Add this import at the top
+import useAuthStore from '../store/auth'
 
 const Profile = () => {
   const navigate = useNavigate()
-  const [user, setUser] = useState({ name: '', email: '', role: '' })
+  const { user, setUser, clearUser } = useAuthStore()
 
-  // Fetch user data
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (!token) {
@@ -16,7 +16,6 @@ const Profile = () => {
       return
     }
 
-    // Fetch user info using fetch API
     const fetchUserData = async () => {
       try {
         const response = await fetch('/api/auth/profile', {
@@ -32,25 +31,31 @@ const Profile = () => {
 
         const data = await response.json()
         if (data.success) {
-          setUser(data.user) // Set the user data to state
+          setUser(data.user)
         } else {
           throw new Error(data.message || 'Failed to load user data')
         }
       } catch (error) {
         console.error('Error fetching user data:', error)
-        navigate('/login') // Redirect to login if there's an issue
+        navigate('/login')
       }
     }
 
     fetchUserData()
-  }, [navigate])
+  }, [navigate, setUser])
 
-  // Logout function
   const handleLogout = () => {
-    // Clear the token from localStorage
     localStorage.removeItem('token')
-    // Redirect to the login page
+    clearUser()
     navigate('/login')
+  }
+
+  if (!user) {
+    return (
+      <div className='flex justify-center items-center min-h-screen'>
+        <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500'></div>
+      </div>
+    )
   }
 
   return (

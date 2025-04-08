@@ -1,22 +1,41 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import cardData from '../dataFile/cardData.json'
 
 const Carousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isTransitioning, setIsTransitioning] = useState(false)
 
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % cardData.length)
-  }
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIsTransitioning(true)
+      setTimeout(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % cardData.length)
+        setIsTransitioning(false)
+      }, 500)
+    }, 5000)
 
-  setTimeout(nextSlide, 5000)
+    return () => clearInterval(timer)
+  }, [])
+
+  // Preload images
+  useEffect(() => {
+    cardData.forEach((card) => {
+      const img = new Image()
+      img.src = card.Image
+    })
+  }, [])
 
   return (
     <div className='relative w-full h-96 overflow-hidden sm:mt-0'>
       {cardData.map((card, index) => (
         <div
           key={card.id}
-          className={`absolute top-0 left-0 w-full h-full transition-opacity duration-500 ${
-            index === currentIndex ? 'opacity-100' : 'opacity-0'
+          className={`absolute top-0 left-0 w-full h-full transition-all duration-500 ${
+            index === currentIndex
+              ? 'opacity-100 z-10'
+              : index === (currentIndex + 1) % cardData.length
+              ? 'opacity-0 z-0'
+              : 'opacity-0 -z-10'
           }`}
         >
           <div className='w-full h-full overflow-hidden'>

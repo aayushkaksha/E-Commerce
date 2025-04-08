@@ -10,13 +10,13 @@ const Filterer = () => {
     <div className='pt-5'>
       <h5 className='font-poppins text-2xl font-normal mb-7'>Categories</h5>
       <ul className='space-y-5'>
-        {/* Men's Shoes Section */}
+        {/* Men's Clothing Section */}
         <li className='relative'>
           <button
-            onClick={() => toggleSubmenu('mensShoes1')}
+            onClick={() => toggleSubmenu('mensClothing')}
             className='flex items-center justify-between text-left w-full font-poppins text-sm font-normal'
           >
-            Mens Shoes
+            Men's Clothing
             <span className='absolute right-0 text-black font-bold'>
               &#9662;
             </span>
@@ -24,19 +24,21 @@ const Filterer = () => {
           <hr className='border-gray-300 my-3' />
           <ul
             className={`pl-4 space-y-2 transition-all duration-700 ease-in-out overflow-hidden ${
-              openSubmenu === 'mensShoes1'
+              openSubmenu === 'mensClothing'
                 ? 'max-h-screen opacity-100'
                 : 'max-h-0 opacity-0'
             }`}
           >
             {[
-              'Casual',
-              'Football',
-              'Jordan',
-              'Lifestyle',
-              'Running',
-              'Soccer',
-              'Sports',
+              'T-Shirts',
+              'Shirts',
+              'Jeans',
+              'Pants',
+              'Jackets',
+              'Sweaters',
+              'Hoodies',
+              'Suits',
+              'Activewear',
             ].map((item) => (
               <li key={item}>
                 <a
@@ -51,13 +53,13 @@ const Filterer = () => {
           </ul>
         </li>
 
-        {/* Women's Shoes Section */}
+        {/* Women's Clothing Section */}
         <li className='relative'>
           <button
-            onClick={() => toggleSubmenu('womensShoes')}
+            onClick={() => toggleSubmenu('womensClothing')}
             className='flex items-center justify-between text-left w-full -mt-3 font-poppins text-sm font-normal'
           >
-            Womens Shoes
+            Women's Clothing
             <span className='absolute right-0 text-black font-bold'>
               &#9662;
             </span>
@@ -65,19 +67,62 @@ const Filterer = () => {
           <hr className='border-gray-300 my-3' />
           <ul
             className={`pl-4 space-y-2 transition-all duration-700 ease-in-out overflow-hidden ${
-              openSubmenu === 'womensShoes'
+              openSubmenu === 'womensClothing'
                 ? 'max-h-screen opacity-100'
                 : 'max-h-0 opacity-0'
             }`}
           >
             {[
-              'Casual',
-              'Football',
-              'Jordan',
-              'Lifestyle',
-              'Running',
-              'Soccer',
-              'Sports',
+              'Dresses',
+              'Tops',
+              'Blouses',
+              'Jeans',
+              'Pants',
+              'Skirts',
+              'Jackets',
+              'Sweaters',
+              'Activewear',
+            ].map((item) => (
+              <li key={item}>
+                <a
+                  href='#'
+                  className='text-gray-400 hover:text-white font-poppins text-sm font-normal'
+                >
+                  <span className='mr-2 fa fa-chevron-right'></span>
+                  {item}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </li>
+
+        {/* Footwear Section */}
+        <li className='relative'>
+          <button
+            onClick={() => toggleSubmenu('footwear')}
+            className='flex items-center justify-between text-left w-full -mt-3 font-poppins text-sm font-normal'
+          >
+            Footwear
+            <span className='absolute right-0 text-black font-bold'>
+              &#9662;
+            </span>
+          </button>
+          <hr className='border-gray-300 my-3' />
+          <ul
+            className={`pl-4 space-y-2 transition-all duration-700 ease-in-out overflow-hidden ${
+              openSubmenu === 'footwear'
+                ? 'max-h-screen opacity-100'
+                : 'max-h-0 opacity-0'
+            }`}
+          >
+            {[
+              'Sneakers',
+              'Boots',
+              'Sandals',
+              'Heels',
+              'Flats',
+              'Athletic Shoes',
+              'Formal Shoes',
             ].map((item) => (
               <li key={item}>
                 <a
@@ -111,40 +156,16 @@ const Filterer = () => {
                 : 'max-h-0 opacity-0'
             }`}
           >
-            {['Necklace', 'Ring', 'Bag', 'Sacks', 'Lipstick'].map((item) => (
-              <li key={item}>
-                <a
-                  href='#'
-                  className='text-gray-400 hover:text-white font-poppins text-sm font-normal'
-                >
-                  <span className='mr-2 fa fa-chevron-right'></span>
-                  {item}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </li>
-
-        {/* Clothes Section */}
-        <li className='relative'>
-          <button
-            onClick={() => toggleSubmenu('clothes')}
-            className='flex items-center justify-between text-left w-full -mt-3 font-poppins text-sm font-normal'
-          >
-            Clothes
-            <span className='absolute right-0 text-black font-bold'>
-              &#9662;
-            </span>
-          </button>
-          <hr className='border-gray-300 my-3' />
-          <ul
-            className={`pl-4 space-y-2 transition-all duration-700 ease-in-out overflow-hidden ${
-              openSubmenu === 'clothes'
-                ? 'max-h-screen opacity-100'
-                : 'max-h-0 opacity-0'
-            }`}
-          >
-            {['Jeans', 'T-shirt', 'Jacket', 'Shoes', 'Sweater'].map((item) => (
+            {[
+              'Bags',
+              'Jewelry',
+              'Belts',
+              'Scarves',
+              'Sunglasses',
+              'Watches',
+              'Hats',
+              'Socks',
+            ].map((item) => (
               <li key={item}>
                 <a
                   href='#'
@@ -164,14 +185,21 @@ const Filterer = () => {
         <h5 className='font-poppins text-2xl font-normal mb-7'>Tag Cloud</h5>
         <div className='flex flex-wrap gap-2'>
           {[
-            'dish',
-            'menu',
-            'food',
-            'sweet',
-            'tasty',
-            'delicious',
-            'desserts',
-            'drinks',
+            'New Arrivals',
+            'Sale',
+            'Trending',
+            'Casual',
+            'Formal',
+            'Summer',
+            'Winter',
+            'Limited Edition',
+            'Sustainable',
+            'Vintage',
+            'Designer',
+            'Athletic',
+            'Plus Size',
+            'Petite',
+            'Maternity',
           ].map((tag) => (
             <a
               key={tag}

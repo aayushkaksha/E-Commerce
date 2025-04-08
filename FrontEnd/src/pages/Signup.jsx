@@ -102,14 +102,14 @@ const Signup = () => {
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-100'>
       <div className='flex flex-col lg:flex-row bg-white rounded-lg shadow-lg overflow-hidden xl:min-w-[400px] lg:w-[900px]'>
-        <div className='hidden lg:block w-1/2'>
+        <div className='hidden lg:block lg:w-1/2 h-[600px]'>
           <img
-            src='https://via.placeholder.com/600'
+            src='https://wallpaperswide.com/download/jisoo_kpop_star_singer_blackpink-wallpaper-600x800.jpg'
             alt='Signup'
-            className='w-full h-full object-cover'
+            className='object-cover h-full w-full'
           />
         </div>
-        <div className='w-full lg:w-2/3 xl:w-3/5 p-6 bg-white shadow-md rounded-lg'>
+        <div className='w-full lg:w-1/2 p-6 lg:p-8 flex flex-col justify-center'>
           <h2 className='text-2xl font-bold text-center mb-6'>
             Create Your Account
           </h2>
